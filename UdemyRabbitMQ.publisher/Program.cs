@@ -14,7 +14,7 @@ string message = "hello world";
 
 var messageBody = Encoding.UTF8.GetBytes(message);
 
-channel.BasicPublish(string.Empty, "hello world", null, messageBody);
+channel.BasicPublish(string.Empty, "hello-queue", null, messageBody);
 
 Console.WriteLine("Message Gönderilmiştir");
 
