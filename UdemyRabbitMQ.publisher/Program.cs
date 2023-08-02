@@ -10,12 +10,18 @@ var channel = connection.CreateModel();
 
 channel.QueueDeclare("hello-queue", true, false, false);
 
-string message = "hello world";
+Enumerable.Range(1, 50).ToList().ForEach(x =>
+{
 
-var messageBody = Encoding.UTF8.GetBytes(message);
+    string message = $"Message {x}";
 
-channel.BasicPublish(string.Empty, "hello-queue", null, messageBody);
+    var messageBody = Encoding.UTF8.GetBytes(message);
 
-Console.WriteLine("Message Gönderilmiştir");
+    channel.BasicPublish(string.Empty, "hello-queue", null, messageBody);
+
+    Console.WriteLine($"Message Gönderilmiştir : {message}");
+
+});
+
 
 Console.ReadLine();
