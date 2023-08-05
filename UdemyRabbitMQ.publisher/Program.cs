@@ -23,29 +23,19 @@ namespace UdemyRabbitMQ.publisher
 
             var channel = connection.CreateModel();
 
-            channel.ExchangeDeclare("logs-topic", durable: true, type: ExchangeType.Topic);
+            channel.ExchangeDeclare("header-exchange", durable: true, type: ExchangeType.Headers);
 
-            Random rnd = new Random();
+            Dictionary<string,object> headers = new Dictionary<string, object>();
 
-            Enumerable.Range(1, 50).ToList().ForEach(x =>
-            {
+            headers.Add("format", "pdf");
+            headers.Add("shape", "a4");
 
-                LogNames log1 = (LogNames)rnd.Next(1,5);
-                LogNames log2 = (LogNames)rnd.Next(1,5);
-                LogNames log3 = (LogNames)rnd.Next(1,5);
+            var properties = channel.CreateBasicProperties();
+            properties.Headers = headers;
 
-                var routeKey = $"{log1}.{log2}.{log3}";
+            channel.BasicPublish("header-exchange", string.Empty, properties, Encoding.UTF8.GetBytes("header mesajım"));
 
-                string message = $"log-type: {log1}-{log2}-{log3}";
-
-                var messageBody = Encoding.UTF8.GetBytes(message);
-
-                channel.BasicPublish("logs-topic", routeKey, null, messageBody);
-
-                Console.WriteLine($"Log Gönderilmiştir : {message}");
-
-            });
-
+            Console.WriteLine("Mesaj Gönderilmiştir");
 
             Console.ReadLine();
 
